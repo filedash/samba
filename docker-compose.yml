@@ -1,0 +1,24 @@
+services:
+  samba:
+    build: .
+    container_name: samba-server
+    restart: unless-stopped
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      # Single storage directory - all user directories will be created inside this
+      - ./storage:/mount/storage
+      # Configuration files
+      - ./users.conf:/etc/samba/users.conf
+      - ./init_users.sh:/init_users.sh
+    environment:
+      - TZ=UTC
+      - HOST_UID=${UID:-1000}
+      - HOST_GID=${GID:-1000}
+    networks:
+      - samba-network
+
+networks:
+  samba-network:
+    driver: bridge
