@@ -11,11 +11,6 @@ echo "Using HOST_UID=$HOST_UID and HOST_GID=$HOST_GID"
 # Initialize users
 /init_users.sh
 
-# Set proper permissions for storage directory
-# Use host user/group IDs for better compatibility
-chown -R $HOST_UID:$HOST_GID /mount/storage
-chmod -R 775 /mount/storage
-
 # Create log directory
 mkdir -p /var/log/samba
 
