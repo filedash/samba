@@ -10,9 +10,10 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0' # Every Sunday at 2 AM UTC
 
 env:
+  ORG: filedash
   IMAGE_NAME: samba
 
 jobs:
@@ -44,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          images: ${{ secrets.DOCKERHUB_USERNAME || 'testuser' }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -79,6 +80,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME || 'testuser' }}/${{ env.IMAGE_NAME }}
           short-description: 'A containerized Samba file server solution with multi-user support and easy deployment'
           readme-filepath: ./README.md
