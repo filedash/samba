@@ -54,4 +54,20 @@ while IFS=':' read -r username password; do
     
 done < <(grep -E '^[^#\[].*:.*' /etc/samba/users.conf)
 
+# Set proper ownership for each user's directory
+echo "Setting proper ownership for user directories..."
+while read -r line; do
+    # Look for share section headers [sharename]
+    if [[ $line =~ ^\[([^]]+)\]$ ]]; then
+        share_name="${BASH_REMATCH[1]}"
+        share_dir="/mount/storage/$share_name"
+        
+        if [ -d "$share_dir" ] && id "$share_name" &>/dev/null; then
+            echo "Setting ownership for $share_dir to $share_name:$share_name"
+            chown -R "$share_name:$share_name" "$share_dir"
+            chmod -R 775 "$share_dir"
+        fi
+    fi
+done < /etc/samba/users.conf
+
 echo "User and directory initialization complete."
